@@ -13,15 +13,18 @@ class ConnectFour {
     start() {
         this.client = new Client(this);
         this.analyzer = new GameAnalyzer(this);
+
+        this.client.drawBoard();
     }
 
     update() {
-        this.analyzer.checkWinner();
+        this.analyzer.checkBoard(this.board);
         this.switchPlayer();
     }
 
     reset() {
         this.board.forEach(column => column.emptyCells());
+        this.client.drawBoard();
     }
 
     generateboard() {
