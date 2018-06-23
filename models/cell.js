@@ -1,35 +1,27 @@
-export default class Cell {
+class Cell {
     constructor(column, row) {
         this.row = row;
         this.column = column;
-        this.playerPiece = null;
+        this.piece = null;
         this.div = this.generateDiv();
     }
 
     occupy(player) {
-        this.playerPiece = this.generatePieceDiv(player);
-        this.div.append(this.playerPiece);
+        this.piece = new PlayerPiece(player);
+        this.div.append(this.piece.div);
     }
 
     generateDiv() {
         const cellDiv = document.createElement('div');
         cellDiv.className = 'cell';
         cellDiv.setAttribute('row', this.row);
-        cellDiv.setAttribute('column', this.column.index);
+        cellDiv.setAttribute('column', this.column);
 
         return cellDiv;
     }
 
-    generatePieceDiv(player) {
-        const pieceDiv = document.createElement('div');
-        pieceDiv.className = 'game-piece';
-        pieceDiv.style = `background-color: ${player.color}`
-
-        return pieceDiv;
-    }
-
     empty() {
-        this.playerPiece = null;
+        this.piece = null;
         this.div.innerHTML = '';
     }
 }
