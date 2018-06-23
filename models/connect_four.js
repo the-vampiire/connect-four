@@ -3,7 +3,7 @@ class ConnectFour {
         this.client = null;
         this.analyzer = null;
 
-        this.playerOne = playerOne || new Player('Player One', 'red');
+        this.playerOne = playerOne || new Player('Player One', 'orange');
         this.playerTwo = playerTwo || new Player('Player Two', 'black');
         this.currentPlayer = this.playerOne;
 
