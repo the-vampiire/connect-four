@@ -1,60 +1,32 @@
-export default class GameAnalyzer {
+class GameAnalyzer {
     constructor(game) {
         this.game = game;
     }
     
-    checkRowAndColumn(board, column, row) {
-        if (column >= 4) {
-            if (row === board.length - 1) return false;
-            return this.checkRowAndColumn(board, 0, row + 1);
+    checkColumns(board) {
+        for (let col = 0; col < board.length; ++col) {
+            const column = board[col].cells;
+            for (let row = 0; row < column.length; ++row) {
+                const piece = column[row].piece;
+                if (piece === null) continue;
+                else if (this.checkNextRows(column, row, piece.player)) return true;
+            }
         }
-    
-        const player = board[row][column];
-    
-        const columnWinner = this.checkColumn(board, column, row);
-        if (columnWinner) return columnWinner;
-
-        if (player === null) return this.checkRowAndColumn(board, column + 1, row);
-
-        if (
-            board[row][column + 1] === player &&
-            board[row][column + 2] === player &&
-            board[row][column + 3] === player
-        ) return {
-            player,
-            path: {
-                row,
-                start: column,
-                end: column + 3
-            },
-        };
-    
-        return this.checkRowAndColumn(board, column + 1, row);
+        return false;   
     }
 
-    checkColumn(board, column, row) {
+    checkNextRows(column, row, player) {
         if (row >= 3) return false;
-    
-        const player = board[row][column];
-        if (player === null) return this.checkColumn(board, column, row + 1);
-    
-        if (
-            board[row + 1][column] === player &&
-            board[row + 2][column] === player &&
-            board[row + 3][column] === player
-        ) return {
-            player,
-            path: {
-                column,
-                start: row,
-                end: row + 3
-            },
-        };
-    
-        return this.checkColumn(board, column, row + 1);  
+        return (
+            column[row + 1].piece.player === player &&
+            column[row + 2].piece.player === player &&
+            column[row + 3].piece.player === player
+        );
     }
 
     checkWinner() {
-        return this.checkRowAndColumn(this.game.gameState, 0, 0);
+        // return this.checkRowAndColumn(this.game.board, 0, 0);
+        const winner = this.checkColumns(this.game.board);
+        console.log(winner);
     }
 }
