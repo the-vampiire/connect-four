@@ -1,4 +1,4 @@
-export default class ConnectFour {
+class ConnectFour {
     constructor(playerOne = null, playerTwo = null) {
         this.client = null;
         this.analyzer = null;
@@ -6,27 +6,32 @@ export default class ConnectFour {
         this.playerOne = playerOne || new Player('Player One', 'red');
         this.playerTwo = playerTwo || new Player('Player Two', 'black');
         this.currentPlayer = this.playerOne;
-        this.winner = null;
 
-        this.gameState = this.generateGameState();
+        this.board = this.generateboard();
     };
 
-    setup() {
-        this.gameState = this.generateGameState();
-        this.analyzer = new GameAnalyzer(this);
+    start() {
         this.client = new Client(this);
-
-        const resetButton = document.querySelector('#reset');
-        resetButton.addEventListener('click', () => this.reset());
+        this.analyzer = new GameAnalyzer(this);
     }
 
-    generateGameState() {
+    update() {
+        this.analyzer.checkWinner();
+        this.switchPlayer();
+    }
+
+    reset() {
+        this.board.forEach(column => column.emptyCells());
+    }
+
+    generateboard() {
         const board = [];
-        for(let i = 0; i < 6; ++i) {
-            const row = [];
-            for (let j = 0; j < 7; ++j) row.push(null);
-            board.push(row);
+        for (let index = 0; index < 7; ++index) {
+            const col = new Column(index, this);
+            col.populateCells();
+            board.push(col);
         }
+
         return board;
     }
 
@@ -34,25 +39,5 @@ export default class ConnectFour {
         this.currentPlayer = this.currentPlayer === this.playerOne ?
             this.playerTwo :
             this.playerOne;
-
-        this.client.updatePlayer(this.currentPlayer);
-    }
-
-    placePiece(column, row) {
-        this.gameState[row][column] = this.currentPlayer;
-        const result = this.analyzer.checkWinner();
-        if (result) {
-            const { player, path } = result;
-            player.incrementWins();
-
-            const winnerDiv = document.querySelector('#winner');
-            winnerDiv.append(`WINNER! ${player.name}. Number of wins: ${player.wins}`);
-        }
-        this.switchPlayer();
-    }
-
-    reset() {
-        this.gameState = this.generateGameState();
-        this.client.clearBoard();
     }
 }
