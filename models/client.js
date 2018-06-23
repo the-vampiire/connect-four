@@ -11,7 +11,21 @@ class Client {
         this.game.board.forEach(column => boardElement.append(column.div));
     }
 
-    declareWinner(winnerData) {
-        console.log(winnerData);
+    displayWinningPath({ row, column, start, end }) {
+        const board = this.game.board;
+        for (start; start <= end; ++start) {
+            const winCol = column !== undefined ? column : start;
+            const winRow = row !== undefined ? row : start;
+
+            const piece = board[winCol].cells[winRow].piece;
+            piece.div.className += ' win-piece'
+        }
+    }
+
+    declareWinner({ player, path }) {
+        const winnerDiv = document.querySelector('#winner');
+        winnerDiv.innerText = `${player.name} WINS! Total wins: ${player.wins}`;
+
+        this.displayWinningPath(path);
     }
 }
